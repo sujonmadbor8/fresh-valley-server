@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { MongoClient } = require("mongodb");
-const ObjectId = require("mongodb").ObjectID;
+const ObjectID = require("mongodb").ObjectID;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
@@ -38,6 +38,22 @@ client.connect((err) => {
       res.send(result.insertedCount > 0);
       console.log("posted data", newProduct);
     });
+  });
+  app.post("/addCheckOut", (req, res) => {
+    const newProduct = req.body;
+    productCollection.insertOne(newProduct).then((result) => {
+      console.log(result);
+    });
+    console.log(newProduct);
+  });
+
+  // delete data
+  app.delete("/delete/:id", (req, res) => {
+    const id = ObjectID(req.params.id);
+    res.send(id);
+    productCollection
+      .findOneAndDelete({ _id: id })
+      .then((documents) => res.send(!!documents.value));
   });
 });
 
